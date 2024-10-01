@@ -34,3 +34,5 @@ https://github.com/pth113/mern/commit/5a33a1344b421e1e2f4bd2e0c04f7baf3a8a6e15
 
 install extension eslint fro visual code
 
+# Git ignore
+https://github.com/github/gitignore/blob/main/Node.gitignore
