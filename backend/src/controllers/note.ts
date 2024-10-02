@@ -9,3 +9,23 @@ export const getNotes: RequestHandler = async (req, res, next) => {
         next(error);
     }
 }
+
+interface NoteRequestBody  {
+    title : string,
+    text? : string,
+}
+
+export const createNote: RequestHandler<unknown, unknown, NoteRequestBody, unknown> = async (req, res, next) => {
+    const {title, text} = req.body;
+    try {
+        if (!title) {
+            throw Error("Title missing");
+        }
+        const newNote = await NoteModel.create({
+            title, text
+        });
+        res.status(201).json(newNote);
+    } catch(error) {
+        next(error);
+    }
+}

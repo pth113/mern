@@ -3,6 +3,7 @@ import NoteRoutes from "./routes/notes";
 
 const app = express();
 
+app.use(express.json());
 app.use("/api/notes", NoteRoutes);
 
 app.use((req, res, next) => {
