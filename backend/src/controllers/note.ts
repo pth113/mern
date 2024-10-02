@@ -46,3 +46,43 @@ export const createNote: RequestHandler<unknown, unknown, NoteRequestBody, unkno
         next(error);
     }
 }
+
+interface UpdateNoteParams {
+    noteId: number
+}
+export const updateNode: RequestHandler<UpdateNoteParams, unknown, NoteRequestBody, unknown> = async (req, res, next) => {
+    const noteId = req.params.noteId;
+    const {title, text} = req.body;
+    try {
+        if (!mongoose.isValidObjectId(noteId)) {
+            throw Error("noteId is invalid object id");
+        }
+        const note = await NoteModel.findById(noteId).exec();
+        if (!note) {
+            throw Error("note not found");
+        }
+        note.title = title;
+        note.text = text;
+        const updatedNote = await note.save();
+        res.status(200).json(updatedNote);
+    } catch(error) {
+        next(error);
+    }
+}
+
+export const deleteNote: RequestHandler = async (req, res, next) => {
+    const noteId = req.params.noteId;
+    try {
+        if (!mongoose.isValidObjectId(noteId)) {
+            throw Error("noteId is invalid object id");
+        }
+        const note = await NoteModel.findById(noteId).exec();
+        if (!note) {
+            throw Error("note not found");
+        }
+        await note.deleteOne();
+        res.sendStatus(204);
+    } catch(error) {
+        next(error);
+    }
+}
