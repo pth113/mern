@@ -12,7 +12,6 @@ app.get("/", async (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    console.log('aaa');
     next(Error("Endpoint not found"));
 });
 
