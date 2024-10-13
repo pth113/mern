@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/note";
 import mongoose from "mongoose";
+import createHttpError from "http-errors";
 
 export const getNotes: RequestHandler = async (req, res, next) => {
     try {
@@ -15,11 +16,11 @@ export const getNote: RequestHandler = async (req, res, next) => {
     const noteId = req.params.noteId;
     try {
         if (!mongoose.isValidObjectId(noteId)) {
-            throw Error("noteId is invalid object id");
+            throw createHttpError(400, "noteId is invalid object id");
         }
         const note = await NoteModel.findById(noteId).exec();
         if (!note) {
-            throw Error("note not found");
+            throw createHttpError(400, "note not found");
         }
         res.status(200).json(note);
     } catch(error) {
@@ -36,7 +37,7 @@ export const createNote: RequestHandler<unknown, unknown, NoteRequestBody, unkno
     const {title, text} = req.body;
     try {
         if (!title) {
-            throw Error("Title missing");
+            throw createHttpError(400, "Title missing");
         }
         const newNote = await NoteModel.create({
             title, text
@@ -55,11 +56,11 @@ export const updateNode: RequestHandler<UpdateNoteParams, unknown, NoteRequestBo
     const {title, text} = req.body;
     try {
         if (!mongoose.isValidObjectId(noteId)) {
-            throw Error("noteId is invalid object id");
+            throw createHttpError(400, "noteId is invalid object id");
         }
         const note = await NoteModel.findById(noteId).exec();
         if (!note) {
-            throw Error("note not found");
+            throw createHttpError(400, "note not found");
         }
         note.title = title;
         note.text = text;
@@ -74,11 +75,11 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
     const noteId = req.params.noteId;
     try {
         if (!mongoose.isValidObjectId(noteId)) {
-            throw Error("noteId is invalid object id");
+            throw createHttpError(400, "noteId is invalid object id");
         }
         const note = await NoteModel.findById(noteId).exec();
         if (!note) {
-            throw Error("note not found");
+            throw createHttpError(400, "note not found");
         }
         await note.deleteOne();
         res.sendStatus(204);
